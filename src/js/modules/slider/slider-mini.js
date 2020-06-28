@@ -1,8 +1,8 @@
 import Slider from './slider';
 
 export default class MiniSlider extends Slider {
-	constructor(container, next, prev, activeClass, animate, autoplay) {
-		super(container, next, prev, activeClass, animate, autoplay);
+	constructor({container, next, prev, activeClass, animate, autoplay}) {
+		super({container, next, prev, activeClass, animate, autoplay});
 	}
 
 	decorizeSlides() {
@@ -38,20 +38,24 @@ export default class MiniSlider extends Slider {
 	}
 
 	bindTriggers() {
-		this.next.addEventListener('click', () => {
-			this.nextSlide();
+		this.next.forEach(item => {
+			item.addEventListener('click', () => {
+				this.nextSlide();
+			});
 		});
 
-		this.prev.addEventListener('click', () => {
-
-			for (let i = this.slides.length - 1; i > 0; i--) {
-				if (this.slides[i].tagName !== "BUTTON") {
-					let active = this.slides[i];
-					this.container.insertBefore(active, this.slides[0]);
-					this.decorizeSlides();
-					break;
+		this.prev.forEach(item => {
+			item.addEventListener('click', () => {
+	
+				for (let i = this.slides.length - 1; i > 0; i--) {
+					if (this.slides[i].tagName !== "BUTTON") {
+						let active = this.slides[i];
+						this.container.insertBefore(active, this.slides[0]);
+						this.decorizeSlides();
+						break;
+					}
 				}
-			}
+			});
 		});
 	}
 
@@ -64,52 +68,50 @@ export default class MiniSlider extends Slider {
 			clearInterval(autoplay);
 		});
 
-		this.next.addEventListener('mouseenter', () => {
-			clearInterval(autoplay);
+		this.next.forEach(item => {
+			item.addEventListener('mouseenter', () => {
+				clearInterval(autoplay);
+			});
 		});
 
-		this.prev.addEventListener('mouseenter', () => {
-			clearInterval(autoplay);
+		this.prev.forEach(item => {
+			item.addEventListener('mouseenter', () => {
+				clearInterval(autoplay);
+			});
 		});
-
-		// this.slides[0].parentNode.addEventListener('mouseleave', () => {
-		// 	this.autoplayGo();
-		// });
-
-		// this.next.addEventListener('mouseleave', () => {
-		// 	this.autoplayGo();
-		// });
-
-		// this.prev.addEventListener('mouseleave', () => {
-		// 	this.autoplayGo();
-		// });
 	}
 
 	init() {
-		this.container.style.cssText = `
-			display: flex;
-			flex-wrap: wrap;
-			overflow: hidden;
-			align-items: flex-start;
-		`;
+		try {
+			this.container.style.cssText = `
+				display: flex;
+				flex-wrap: wrap;
+				overflow: hidden;
+				align-items: flex-start;
+			`;
 
-		this.bindTriggers();
-		this.decorizeSlides();
+			this.bindTriggers();
+			this.decorizeSlides();
 
-		if (this.autoplay) {
-			this.autoplayGo();
-
-			this.slides[0].parentNode.addEventListener('mouseleave', () => {
+			if (this.autoplay) {
 				this.autoplayGo();
-			});
 
-			this.next.addEventListener('mouseleave', () => {
-				this.autoplayGo();
-			});
-	
-			this.prev.addEventListener('mouseleave', () => {
-				this.autoplayGo();
-			});
-		}
+				this.slides[0].parentNode.addEventListener('mouseleave', () => {
+					this.autoplayGo();
+				});
+
+				this.next.forEach(item => {
+					item.addEventListener('mouseleave', () => {
+						this.autoplayGo();
+					});
+				});
+		
+				this.prev.forEach(item => {
+					item.addEventListener('mouseleave', () => {
+						this.autoplayGo();
+					});
+				});
+			}
+		} catch(e){}
 	}
 }
